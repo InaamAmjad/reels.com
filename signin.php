@@ -2,28 +2,7 @@
 <?php
 // Start the session
 session_start();
-
-// Database connection settings
-$servername = "reels-server.mysql.database.azure.com"; // Azure MySQL hostname
-$username = "reelsmydb"; // Your username
-$password = "CO$r2iaiKYUkU7Jv"; // Your password
-$dbname = "reels_db"; // Your database name
-
-// SSL certificate path (you need to download the CA certificate)
-$ca_cert_path = "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem"; // Replace with the actual path to the CA certificate
-
-// Create connection
-$conn = mysqli_init();
-
-// Set SSL certificates
-mysqli_ssl_set($conn, NULL, NULL, $ca_cert_path, NULL, NULL);
-
-// Connect to MySQL with SSL
-if (!mysqli_real_connect($conn, $servername, $username, $password, $dbname, 3306, MYSQLI_CLIENT_SSL)) {
-    die("Connection failed: " . mysqli_connect_error());
-} else {
-    echo "Connection successful!";
-}
+ echo "<script>alert('startingpoint');</script>";
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
@@ -35,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
 
     // Retrieve username and password from form
     $username = $conn->real_escape_string(trim($_POST['username']));
-    $password = trim($_POST['password']); // Plain text password from form
+    $password = trim($_POST['password']); 
 
     // Validate credentials
     $sql = "SELECT * FROM users WHERE username = '$username'";
@@ -69,9 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     $conn->close();
 }
 ?>
-
-<?php include('includes/header.php'); ?>
-
 <main>
     <h1>Sign In</h1>
     <form action="signin.php" method="post">
