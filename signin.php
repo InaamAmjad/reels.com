@@ -2,34 +2,25 @@
 <?php
 // Start the session
 session_start();
- echo "<script>alert('startingpoint');</script>";
+
 // Database connection settings
-$servername = "reels-server.mysql.database.azure.com"; // Azure MySQL hostname
-$username = "reelsmydb"; // Your username
-$password = "CO$r2iaiKYUkU7Jv"; // Your password
-$dbname = "reels_db"; // Your database name
- echo "<script>alert('befoersslpoint');</script>";
-// SSL certificate path (you need to download the CA certificate)
-$ca_cert_path = "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem"; // Replace with the actual path to the CA certificate
- echo "<script>alert('afterssl');</script>";
+$servername = "reels-server.mysql.database.azure.com";
+$username = "reelsmydb";
+$password = "CO$r2iaiKYUkU7Jv";
+$dbname = "reels_db";
+ echo "<script>alert('values added');</script>";
+
 // Create connection
-$conn = mysqli_init();
-
-// Set SSL certificates
-mysqli_ssl_set($conn, NULL, NULL, $ca_cert_path, NULL, NULL);
- echo "<script>alert('setssl');</script>";
-// Connect to MySQL with SSL
-
-$conn = mysqli_init();
-if (!mysqli_real_connect($conn, $servername, $username, $password, $dbname, 3306, MYSQLI_CLIENT_SSL)) {
-    // Show an alert and stop execution (without die())
-    echo "<script>alert('Connection failed');</script>";
-    exit;
-} else {
+$conn = new mysqli($servername, $username, $password, $dbname);
+echo "<script>alert('values set in conn');</script>";
+// Check connection
+if ($conn->connect_error) {
+  echo "<script>alert('dying');</script>";
+    die("Connection failed: " . $conn->connect_error);
+}else {
     // Show an alert for a successful connection
     echo "<script>alert('Connection successful');</script>";
 }
-
 
  echo "<script>alert('endpoint');</script>";
 // Handle form submission
