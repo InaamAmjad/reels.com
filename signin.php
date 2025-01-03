@@ -1,6 +1,7 @@
 <?php include('includes/header.php'); ?>
 <?php
 // Start the session
+echo "<script>alert('start');</script>";
 session_start();
 $serverName = "reels-server.mysql.database.azure.com";  // Full server name
 $connectionOptions = array(
