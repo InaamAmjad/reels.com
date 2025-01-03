@@ -11,10 +11,10 @@ $connectionOptions = array(
     "Encrypt" => true,                  // Enable SSL encryption
     "TrustServerCertificate" => false,  // Ensure the server certificate is validated
 );
-echo "<script>alert('valuesadded');</script>";
+
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
-echo "<script>alert('values set in conn');</script>";
+
 // Check connection
 if ($conn->connect_error) {
   echo "<script>alert('dying');</script>";
@@ -24,7 +24,7 @@ if ($conn->connect_error) {
     echo "<script>alert('Connection successful');</script>";
 }
 
- echo "<script>alert('endpoint');</script>";
+ echo "<script>alert('middlepoint');</script>";
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     // Validate that form inputs are set and not empty
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
         echo "<script>alert('Please fill in both username and password.');</script>";
         exit;
     }
-
+ echo "<script>alert('endpoint');</script>";
     // Retrieve username and password from form
     $username = $conn->real_escape_string(trim($_POST['username']));
     $password = trim($_POST['password']); 
