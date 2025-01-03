@@ -19,11 +19,18 @@ $conn = mysqli_init();
 mysqli_ssl_set($conn, NULL, NULL, $ca_cert_path, NULL, NULL);
  echo "<script>alert('setssl');</script>";
 // Connect to MySQL with SSL
+
+$conn = mysqli_init();
 if (!mysqli_real_connect($conn, $servername, $username, $password, $dbname, 3306, MYSQLI_CLIENT_SSL)) {
-    die("Connection failed: " . mysqli_connect_error());echo "<script>alert('failed');</script>";
+    // Show an alert and stop execution (without die())
+    echo "<script>alert('Connection failed');</script>";
+    exit;
 } else {
-    echo "<script>alert('connection successful');</script>";
+    // Show an alert for a successful connection
+    echo "<script>alert('Connection successful');</script>";
 }
+
+
  echo "<script>alert('endpoint');</script>";
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
