@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
             if ($user['role'] === 'creator') {
                 header("Location: video.php");
             } else {
-                header("Location: home.php");
+                header("Location: index.php");
             }
             exit;
         } else {
