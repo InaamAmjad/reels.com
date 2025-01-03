@@ -1,25 +1,28 @@
 <?php include('includes/header.php'); ?>
-
-<main>
-    <h1>Sign In</h1>
-    <form action="signin.php" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-
-        <button type="submit" name="signin">Sign In</button>
-    </form>
-</main>
-
-<?php include('includes/footer.php'); ?>
-
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
-    session_start();
-    include('db_config.php');
+// Start the session
+session_start();
 
+// Database connection settings
+$servername = "reels-server.mysql.database.azure.com";
+$username = "reelsmydb";
+$password = "CO$r2iaiKYUkU7Jv";
+$dbname = "reels_db";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} else {
+    // Output success message only for debugging purposes
+    // Comment out the following line in production
+    echo "<script>alert('Database connection successful!');</script>";
+}
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     // Validate that form inputs are set and not empty
     if (empty($_POST['username']) || empty($_POST['password'])) {
         echo "<script>alert('Please fill in both username and password.');</script>";
@@ -62,3 +65,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     $conn->close();
 }
 ?>
+
+<?php include('includes/header.php'); ?>
+
+<main>
+    <h1>Sign In</h1>
+    <form action="signin.php" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" name="signin">Sign In</button>
+    </form>
+</main>
+
+<?php include('includes/footer.php'); ?>
