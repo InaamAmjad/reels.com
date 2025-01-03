@@ -20,7 +20,7 @@ mysqli_ssl_set($conn, NULL, NULL, $ca_cert_path, NULL, NULL);
  echo "<script>alert('setssl');</script>";
 // Connect to MySQL with SSL
 if (!mysqli_real_connect($conn, $servername, $username, $password, $dbname, 3306, MYSQLI_CLIENT_SSL)) {
-    die("Connection failed: " . mysqli_connect_error());
+    die("Connection failed: " . mysqli_connect_error());echo "<script>alert('failed');</script>";
 } else {
     echo "<script>alert('connection successful');</script>";
 }
