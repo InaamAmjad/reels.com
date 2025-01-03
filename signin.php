@@ -2,16 +2,17 @@
 <?php
 // Start the session
 session_start();
+$serverName = "reels-server.mysql.database.azure.com";  // Full server name
+$connectionOptions = array(
+    "Database" => "reels_db", 
+    "Uid" => "reelsmydb", 
+    "PWD" => "Nomi4321",
+    "Encrypt" => true,                  // Enable SSL encryption
+    "TrustServerCertificate" => false,  // Ensure the server certificate is validated
+);
+echo "<script>alert('valuesadded');</script>";
+$conn = sqlsrv_connect($serverName, $connectionOptions);
 
-// Database connection settings
-$servername = "reels-server.mysql.database.azure.com";
-$username = "reelsmydb";
-$password = "CO$r2iaiKYUkU7Jv";
-$dbname = "reels_db";
- echo "<script>alert('values added');</script>";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
 echo "<script>alert('values set in conn');</script>";
 // Check connection
 if ($conn->connect_error) {
