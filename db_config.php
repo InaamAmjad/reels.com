@@ -1,10 +1,10 @@
 <?php
 // Database connection settings
-$servername = "your_azure_sql_server";
-$username = "your_username";
-$password = "your_password";
-$dbname = "reels_db";
 
+$servername = "reels-server.mysql.database.azure.com";
+$username = "reelsmydb";
+$password = "CO$r2iaiKYUkU7Jv";
+$dbname = "reels_db";
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
