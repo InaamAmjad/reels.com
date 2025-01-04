@@ -1,51 +1,32 @@
-<?php include('includes/header.php'); ?>
-<main>
-    <h1>Sign In</h1>
-    <form action="signin.php" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-
-        <button type="submit" name="signin">Sign In</button>
-    </form>
-</main>
-
-<?php include('includes/footer.php'); ?>
 <?php
+session_start();
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
-    session_start();
-    // Database connection
-// Database connection settings
-$serverName = "reels-server.mysql.database.azure.com";  // Full server name
-$connectionOptions = array(
-    "Database" => "reels_db", 
-    "Uid" => "reelsmydb", 
-    "PWD" => "Nomi4321",
-    "Encrypt" => true,                  // Enable SSL encryption
-    "TrustServerCertificate" => false,  // Ensure the server certificate is validated
-);
-$conn = sqlsrv_connect($serverName, $connectionOptions);
-// Check connection
-if ($conn) {
-     // Show an alert for a successful connection
-    echo "<script>alert('Connection successful');</script>";
- 
-}else {
-    echo "<script>alert('dying');</script>";
-    die("Connection failed: " . $conn->connect_error);
-}
+    // Database connection settings
+    $serverName = "reels-server.mysql.database.azure.com";
+    $connectionOptions = array(
+        "Database" => "reels_db",
+        "Uid" => "reelsmydb",
+        "PWD" => "Nomi4321",
+        "Encrypt" => true,
+        "TrustServerCertificate" => false,
+    );
+    $conn = sqlsrv_connect($serverName, $connectionOptions);
+
+    if (!$conn) {
+        die("<script>alert('Connection failed: " . json_encode(sqlsrv_errors()) . "');</script>");
+    }
+
+    // Validate inputs
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
-
     if (empty($username) || empty($password)) {
         echo "<script>alert('Please fill in both username and password.');</script>";
         exit;
     }
 
-    // Prepare query
+    // Prepare and execute query
     $sql = "SELECT * FROM users WHERE username = ?";
     $stmt = sqlsrv_prepare($conn, $sql, array($username));
     if (!$stmt || !sqlsrv_execute($stmt)) {
@@ -67,8 +48,22 @@ if ($conn) {
     } else {
         echo "<script>alert('Invalid username or password.');</script>";
     }
+
     sqlsrv_close($conn);
 }
-
-
 ?>
+
+<?php include('includes/header.php'); ?>
+<main>
+    <h1>Sign In</h1>
+    <form action="signin.php" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" name="signin">Sign In</button>
+    </form>
+</main>
+<?php include('includes/footer.php'); ?>
