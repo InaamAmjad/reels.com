@@ -1,67 +1,57 @@
+
 <?php
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     // Database connection settings
-    $host = "reels-server.mysql.database.azure.com"; // Hostname
-    $username = "reelsmydb";                         // Username
-    $password = "Nomi4321";                          // Password
-    $dbname = "reels_db";                            // Database name
-    $port = 3306;                                    // MySQL port
+    $host = "reels-server.mysql.database.azure.com";
+    $username = "reelsmydb";
+    $password = "Nomi4321";
+    $dbname = "reels_db";
+    $port = 3306;
 
-    // SSL certificate path (adjust as needed for your environment)
-    $ssl_ca = '/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem';
-
-    // PDO connection options
     $options = [
-        PDO::MYSQL_ATTR_SSL_CA => $ssl_ca,
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Enable exceptions for errors
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Fetch results as associative arrays
+        PDO::MYSQL_ATTR_SSL_CA => '/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem',
     ];
 
     try {
-        // Establish PDO connection
         $dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8mb4";
         $pdo = new PDO($dsn, $username, $password, $options);
-        echo "<script>alert('Connection successful!');</script>";
-    } catch (PDOException $e) {
-        die("<script>alert('Connection failed: " . $e->getMessage() . "');</script>");
-    }
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Validate form inputs
-    $input_username = $_POST['username'] ?? '';
-    $input_password = $_POST['password'] ?? '';
+        // Validate inputs
+        $username = trim($_POST['username']);
+        $password = trim($_POST['password']);
+        if (empty($username) || empty($password)) {
+            echo "<script>alert('Please fill in both username and password.');</script>";
+            exit;
+        }
 
-    if (empty($input_username) || empty($input_password)) {
-        echo "<script>alert('Please fill in both username and password.');</script>";
-        exit;
-    }
-
-    try {
-        // Query to check if the username exists
+        // Prepare and execute query
         $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
-        $stmt->execute(['username' => $input_username]);
+        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $user = $stmt->fetch();
-
-        if ($user && password_verify($input_password, $user['password'])) {
-            // Set session variables
+        // Validate user and password
+        if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
 
-            // Redirect based on the user's role
             $redirect = ($user['role'] === 'creator') ? "video.php" : "index.php";
             header("Location: $redirect");
             exit;
         } else {
+             echo "<script>alert('Invalid username."$user['username']". or password."$user['password']".');</script>";
             echo "<script>alert('Invalid username or password.');</script>";
         }
     } catch (PDOException $e) {
-        echo "<script>alert('Database query failed: " . $e->getMessage() . "');</script>";
+        die("<script>alert('Connection or query failed: " . $e->getMessage() . "');</script>");
     }
 }
 ?>
+
 
 <?php include('includes/header.php'); ?>
 <main>
