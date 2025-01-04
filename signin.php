@@ -4,7 +4,7 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     $conn = mysqli_init();
-mysqli_ssl_set($conn,NULL,NULL, "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
+mysqli_ssl_set($conn,NULL,NULL, "/home/site/ssl_certs/DigiCertGlobalRootG2.crt.pem", NULL, NULL);
 mysqli_real_connect($conn, 'mydemoserver.mysql.database.azure.com', 'reelsmydb', 'Nomi4321', 'reels_db', 3306, MYSQLI_CLIENT_SSL);
 if (mysqli_connect_errno()) {
 die('Failed to connect to MySQL: '.mysqli_connect_error());
@@ -17,7 +17,7 @@ die('Failed to connect to MySQL: '.mysqli_connect_error());
     $port = 3306;
 
     $options = [
-        PDO::MYSQL_ATTR_SSL_CA => '/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem',
+        PDO::MYSQL_ATTR_SSL_CA => '/home/site/ssl_certs/DigiCertGlobalRootG2.crt.pem',
     ];
 
     try {
