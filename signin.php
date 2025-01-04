@@ -29,12 +29,13 @@ $connectionOptions = array(
 );
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 // Check connection
-if ($conn->connect_error) {
-  echo "<script>alert('dying');</script>";
-    die("Connection failed: " . $conn->connect_error);
-}else {
-    // Show an alert for a successful connection
+if ($conn) {
+     // Show an alert for a successful connection
     echo "<script>alert('Connection successful');</script>";
+ 
+}else {
+    echo "<script>alert('dying');</script>";
+    die("Connection failed: " . $conn->connect_error);
 }
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
