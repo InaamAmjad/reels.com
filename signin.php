@@ -3,52 +3,66 @@
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
-  
-    // Database connection settings
-    $host = "reels-server.mysql.database.azure.com";
+    // Database credentials
+    $servername = "reels-server.mysql.database.azure.com";
     $username = "reelsmydb";
     $password = "Nomi4321";
     $dbname = "reels_db";
-    $port = 3306;
 
-    $options = [
-        PDO::MYSQL_ATTR_SSL_CA => '/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem',
-    ];
+    // Initialize MySQL connection
+    $con = mysqli_init();  // Initialize the MySQL connection
 
-    try {
-        $dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8mb4";
-        $pdo = new PDO($dsn, $username, $password, $options);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Set up SSL parameters
+    mysqli_ssl_set($con, NULL, NULL, "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
 
-        // Validate inputs
-        $username = trim($_POST['username']);
-        $password = trim($_POST['password']);
-        if (empty($username) || empty($password)) {
-            echo "<script>alert('Please fill in both username and password.');</script>";
-            exit;
-        }
+    // Establish a connection to the MySQL database
+    if (!mysqli_real_connect($con, $servername, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL)) {
+        // Check connection and handle errors
+        die("Connection failed: " . mysqli_connect_error());
+    }
 
-        // Prepare and execute query
-        $stmt = $pdo->prepare("SELECT * FROM reels_db.users WHERE username = :username");
-        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Sanitize and validate the inputs
+    $input_username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+    $input_password = $_POST['password'];
 
-        // Validate user and password
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
+    // Check if required fields are not empty
+    if (empty($input_username) || empty($input_password)) {
+        echo "<script>alert('Both fields are required.'); window.location.href='signin.php';</script>";
+        exit;
+    }
 
-            $redirect = ($user['role'] == 'creator') ? "video.php" : "index.php";
-            header("Location: $redirect");
+    // Query to check if the user exists
+    $query = "SELECT id, username, password, role FROM reels_db.users WHERE username = ?";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, "s", $input_username);  // Bind username to the query
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_store_result($stmt);
+
+    // Check if user exists
+    if (mysqli_stmt_num_rows($stmt) == 1) {
+        mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $role);
+        mysqli_stmt_fetch($stmt);
+
+        // Verify the password
+        if (password_verify($input_password, $hashed_password)) {
+            // Start session and set session variables
+            session_start();
+            $_SESSION['user_id'] = $id;
+            $_SESSION['username'] = $username;
+            $_SESSION['role'] = $role;
+
+            // Redirect to dashboard or home page
+            echo "<script>alert('Login successful!'); window.location.href='index.php';</script>";
             exit;
         } else {
-             echo "<script>alert('Invalid username" . $user['username'] ." or password " . $user['password']."');</script>";
-            echo "<script>alert('Invalid username or password.');</script>";
+            // Incorrect password
+            echo "<script>alert('Incorrect password. Please try again.'); window.location.href='signin.php';</script>";
+            exit;
         }
-    } catch (PDOException $e) {
-        die("<script>alert('Connection or query failed: " . $e->getMessage() . "');</script>");
+    } else {
+        // Username does not exist
+        echo "<script>alert('Username does not exist. Please check and try again.'); window.location.href='signin.php';</script>";
+        exit;
     }
 }
 ?>
