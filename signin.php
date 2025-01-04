@@ -3,20 +3,30 @@ session_start();
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
-    // Database connection settings
-    $serverName = "reels-server.mysql.database.azure.com";
-    $connectionOptions = array(
-        "Database" => "reels_db",
-        "Uid" => "reelsmydb",
-        "PWD" => "Nomi4321",
-        "Encrypt" => true,
-        "TrustServerCertificate" => true,
-    );
-    $conn = sqlsrv_connect($serverName, $connectionOptions);
+   // Database connection settings
+$host = "reels-server.mysql.database.azure.com"; // Hostname from Workbench
+$username = "reelsmydb";                        // Username from Workbench
+$password = "Nomi4321";                         // Password you set in Workbench
+$dbname = "reels_db";                           // Name of your database
+$port = 3306;                                   // Default MySQL port
 
-    if (!$conn) {
-        die("<script>alert('Connection failed: " . json_encode(sqlsrv_errors()) . "');</script>");
-    }
+// Enable SSL (based on the SSL enabled in your Workbench setup)
+$options = array(
+    PDO::MYSQL_ATTR_SSL_CA => '/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem', // SSL certificate
+);
+
+try {
+    // Establish connection using PDO
+    $dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8mb4";
+    $pdo = new PDO($dsn, $username, $password, $options);
+
+    // Set error mode
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    echo "<script>alert('Connection successful!');</script>";
+} catch (PDOException $e) {
+    die("<script>alert('Connection failed: " . $e->getMessage() . "');</script>");
+}
 
     // Validate inputs
     $username = $_POST['username'] ?? '';
