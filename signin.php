@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
             header("Location: $redirect");
             exit;
         } else {
-             echo "<script>alert('Invalid username."$user['username']". or password."$user['password']".');</script>";
+             echo "<script>alert('Invalid username" . $user['username'] ." or password " . $user['password']."');</script>";
             echo "<script>alert('Invalid username or password.');</script>";
         }
     } catch (PDOException $e) {
