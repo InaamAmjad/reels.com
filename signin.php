@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Validate user and password
-        if ($user && ($password == $user['password'])) {
+        if ($user && password_verify($password, $user['password']) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
