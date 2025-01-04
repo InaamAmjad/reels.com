@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
 
-            $redirect = ($user['role'] == 'creator') ? "video.php" : "index.php";
+            $redirect = ($user['role'] === 'creator') ? "video.php" : "index.php";
             header("Location: $redirect");
             exit;
         } else {
