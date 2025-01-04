@@ -2,17 +2,20 @@
 // Database connection settings
 $servername = "reels-server.mysql.database.azure.com";
 $username = "reelsmydb";
-$password = "CO$r2iaiKYUkU7Jv";
+$password = "Nomi4321";
 $dbname = "reels_db";
 
-$con = mysqli_init();
-mysqli_ssl_set($con,NULL,NULL, "Downloads", NULL, NULL);
-mysqli_real_connect($conn, "reels-server.mysql.database.azure.com", "reelsmydb", "{your_password}", "{your_database}", 3306, MYSQLI_CLIENT_SSL);
-// Create connection
+$con = mysqli_init();  // Initialize the MySQL connection
 
+// Set up SSL parameters
+mysqli_ssl_set($con, NULL, NULL, "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// Establish a connection to the MySQL database
+if (!mysqli_real_connect($con, $servername, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL)) {
+    // Check connection and handle errors
+    die("Connection failed: " . mysqli_connect_error());
 }
+
+// If connection is successful, continue your logic here
+echo "Connection successful!";
 ?>
