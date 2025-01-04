@@ -3,12 +3,7 @@
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
-    $conn = mysqli_init();
-mysqli_ssl_set($conn,NULL,NULL, "/home/site/ssl_certs/DigiCertGlobalRootG2.crt.pem", NULL, NULL);
-mysqli_real_connect($conn, 'mydemoserver.mysql.database.azure.com', 'reelsmydb', 'Nomi4321', 'reels_db', 3306, MYSQLI_CLIENT_SSL);
-if (mysqli_connect_errno()) {
-die('Failed to connect to MySQL: '.mysqli_connect_error());
-}
+  
     // Database connection settings
     $host = "reels-server.mysql.database.azure.com";
     $username = "reelsmydb";
@@ -17,7 +12,7 @@ die('Failed to connect to MySQL: '.mysqli_connect_error());
     $port = 3306;
 
     $options = [
-        PDO::MYSQL_ATTR_SSL_CA => '/home/site/ssl_certs/DigiCertGlobalRootG2.crt.pem',
+        PDO::MYSQL_ATTR_SSL_CA => '/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem',
     ];
 
     try {
@@ -34,7 +29,7 @@ die('Failed to connect to MySQL: '.mysqli_connect_error());
         }
 
         // Prepare and execute query
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt = $pdo->prepare("SELECT * FROM reels_db.users WHERE username = :username");
         $stmt->bindParam(':username', $username, PDO::PARAM_STR);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
