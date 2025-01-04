@@ -1,5 +1,5 @@
 <?php include('includes/header.php'); ?>
-<?php phpinfo(); ?>
+
 <main>
     <h1>Welcome to Reels.com</h1>
     <div id="video-container">
