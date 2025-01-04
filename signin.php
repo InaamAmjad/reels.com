@@ -3,6 +3,12 @@
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
+    $conn = mysqli_init();
+mysqli_ssl_set($conn,NULL,NULL, "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
+mysqli_real_connect($conn, 'mydemoserver.mysql.database.azure.com', 'reelsmydb', 'Nomi4321', 'reels_db', 3306, MYSQLI_CLIENT_SSL);
+if (mysqli_connect_errno()) {
+die('Failed to connect to MySQL: '.mysqli_connect_error());
+}
     // Database connection settings
     $host = "reels-server.mysql.database.azure.com";
     $username = "reelsmydb";
