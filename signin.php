@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
         "Uid" => "reelsmydb",
         "PWD" => "Nomi4321",
         "Encrypt" => true,
-        "TrustServerCertificate" => false,
+        "TrustServerCertificate" => true,
     );
     $conn = sqlsrv_connect($serverName, $connectionOptions);
 
