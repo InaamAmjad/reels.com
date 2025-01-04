@@ -28,13 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
 
         // Check if required fields are not empty
         if (empty($username) || empty($password) || empty($confirm_password) || empty($role)) {
-            echo "<script>alert('All fields are required.');</script>";
+            echo "<script>alert('All fields are required.'); window.location.href='signup.php';</script>";
             exit;
         }
 
         // Validate passwords match
         if ($password !== $confirm_password) {
-            echo "<script>alert('Passwords do not match.');</script>";
+            echo "<script>alert('Passwords do not match.'); window.location.href='signup.php';</script>";
             exit;
         }
 
@@ -42,16 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         // Check if the username already exists
-        $check_query = "SELECT COUNT(*) FROM users WHERE username = :username";
+        $check_query = "SELECT COUNT(*) FROM reels_db.users WHERE username = :username";
         $stmt = $pdo->prepare($check_query);
         $stmt->execute(['username' => $username]);
         if ($stmt->fetchColumn() > 0) {
-            echo "<script>alert('Username already exists. Please choose another.');</script>";
+            echo "<script>alert('Username already exists. Please choose another.'); window.location.href='signup.php';</script>";
             exit;
         }
 
         // Insert user into database
-        $insert_query = "INSERT INTO users (username, password, role) VALUES (:username, :password, :role)";
+        $insert_query = "INSERT INTO reels_db.users (username, password, role) VALUES (:username, :password, :role)";
         $stmt = $pdo->prepare($insert_query);
         $stmt->execute([
             'username' => $username,
@@ -62,13 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
         echo "<script>alert('Sign up successful! Redirecting to login page...'); window.location.href='login.php';</script>";
         exit;
     } catch (PDOException $e) {
-        echo "<script>alert('Error: " . htmlspecialchars($e->getMessage(), ENT_QUOTES) . "');</script>";
+        echo "<script>alert('Error: " . htmlspecialchars($e->getMessage(), ENT_QUOTES) . "'); window.location.href='signup.php';</script>";
         exit;
     }
-} else {
-    echo "<script>alert('Invalid request method. Please submit the form.');</script>";
-    exit;
 }
+?>
 
 <?php include('includes/header.php'); ?>
 
@@ -83,16 +81,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
 
         <label for="confirm_password">Confirm Password:</label>
         <input type="password" id="confirm_password" name="confirm_password" required>
-
         <label for="role">Role:</label>
         <select id="role" name="role">
             <option value="creator">Creator</option>
             <option value="consumer">Consumer</option>
         </select>
 
-        <button type="submit">Sign Up</button>
+        <button type="submit" name="signup">Sign Up</button>
     </form>
 </main>
 
 <?php include('includes/footer.php'); ?>
- 
+        
