@@ -14,9 +14,10 @@
 
 <?php include('includes/footer.php'); ?>
 <?php
-session_start();
-
-// Database connection
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
+    session_start();
+    // Database connection
 // Database connection settings
 $serverName = "reels-server.mysql.database.azure.com";  // Full server name
 $connectionOptions = array(
@@ -35,9 +36,6 @@ if ($conn->connect_error) {
     // Show an alert for a successful connection
     echo "<script>alert('Connection successful');</script>";
 }
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
@@ -68,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     } else {
         echo "<script>alert('Invalid username or password.');</script>";
     }
+    sqlsrv_close($conn);
 }
 
-sqlsrv_close($conn);
+
 ?>
