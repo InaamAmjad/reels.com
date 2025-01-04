@@ -1,5 +1,5 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
     // Database credentials
     $host = "reels-server.mysql.database.azure.com";
     $db_username = "reelsmydb";
