@@ -1,4 +1,9 @@
 <?php
+ini_set('session.cookie_lifetime', 86400); // Set session cookie lifetime to 1 day (86400 seconds)
+ini_set('session.cookie_secure', 1);      // Ensure cookie is sent over secure (https) connections
+ini_set('session.cookie_httponly', 1);    // Prevent JavaScript access to session cookies
+session_start();
+
 session_start();
 // Database connection settings
 $servername = "reels-server.mysql.database.azure.com";
