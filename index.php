@@ -1,4 +1,4 @@
-<?php include('includes/header.php'); ?>
+<?php include('includes/header.php');session_start(); ?>
 
 <main>
     <h1>Welcome to Reels.com</h1>
