@@ -1,7 +1,4 @@
 <?php
-
-session_start();
-
 session_start();
 // Database connection settings
 $servername = "reels-server.mysql.database.azure.com";
