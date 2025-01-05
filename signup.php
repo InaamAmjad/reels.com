@@ -48,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
         echo "<script>alert('Username already exists. Please choose another.'); window.location.href='signup.php';</script>";
         exit;
     }
-echo "<script>alert('working fine. Please choose another.');
 
     // Insert user into database
     $insert_query = "INSERT INTO reels_db.users (username, password, role) VALUES (?, ?, ?)";
@@ -64,17 +63,19 @@ echo "<script>alert('working fine. Please choose another.');
 
 <?php include('includes/header.php'); ?>
 
+
 <main>
     <h1>Sign Up</h1>
-    <form action="signup.php" method="post">
+    <form action="signup.php" method="post" autocomplete="off">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" name="username" required autocomplete="new-username">
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" required autocomplete="new-password">
 
         <label for="confirm_password">Confirm Password:</label>
-        <input type="password" id="confirm_password" name="confirm_password" required>
+        <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password">
+
         <label for="role">Role:</label>
         <select id="role" name="role">
             <option value="creator">Creator</option>
