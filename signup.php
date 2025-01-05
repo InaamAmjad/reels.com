@@ -1,70 +1,74 @@
-<?php
+session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
     // Database credentials
-    $host = "reels-server.mysql.database.azure.com";
-    $db_username = "reelsmydb";
-    $db_password = "Nomi4321";
+    $servername = "reels-server.mysql.database.azure.com";
+    $username = "reelsmydb";
+    $password = "Nomi4321";
     $dbname = "reels_db";
-    $port = 3306;
-    $ssl_ca = '/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem';
 
-    // PDO options
-    $options = [
-        PDO::MYSQL_ATTR_SSL_CA => $ssl_ca,
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ];
+    $con = mysqli_init();  // Initialize the MySQL connection
 
-    try {
-        // Establish PDO connection
-        $dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8mb4";
-        $pdo = new PDO($dsn, $db_username, $db_password, $options);
+    // Set up SSL parameters
+    mysqli_ssl_set($con, NULL, NULL, "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
 
-        // Sanitize and validate input
-        $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-        $password = $_POST['password'];
-        $confirm_password = $_POST['confirm_password'];
-        $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
+    // Establish a connection to the MySQL database
+    if (!mysqli_real_connect($con, $servername, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL)) {
+        // Check connection and handle errors
+        die("Connection failed: " . mysqli_connect_error());
+    }
 
-        // Check if required fields are not empty
-        if (empty($username) || empty($password) || empty($confirm_password) || empty($role)) {
-            echo "<script>alert('All fields are required.'); window.location.href='signup.php';</script>";
-            exit;
-        }
+    // Sanitize and validate input
+    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+    $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
 
-        // Validate passwords match
-        if ($password !== $confirm_password) {
-            echo "<script>alert('Passwords do not match.'); window.location.href='signup.php';</script>";
-            exit;
-        }
-
-        // Hash the password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // Check if the username already exists
-        $check_query = "SELECT COUNT(*) FROM reels_db.users WHERE username = :username";
-        $stmt = $pdo->prepare($check_query);
-        $stmt->execute(['username' => $username]);
-        if ($stmt->fetchColumn() > 0) {
-            echo "<script>alert('Username already exists. Please choose another.'); window.location.href='signup.php';</script>";
-            exit;
-        }
-
-        // Insert user into database
-        $insert_query = "INSERT INTO reels_db.users (username, password, role) VALUES (:username, :password, :role)";
-        $stmt = $pdo->prepare($insert_query);
-        $stmt->execute([
-            'username' => $username,
-            'password' => $hashed_password,
-            'role' => $role,
-        ]);
-
-        echo "<script>alert('Sign up successful! Redirecting to login page...'); window.location.href='login.php';</script>";
-        exit;
-    } catch (PDOException $e) {
-        echo "<script>alert('Error: " . htmlspecialchars($e->getMessage(), ENT_QUOTES) . "'); window.location.href='signup.php';</script>";
+    // Additional validation for username
+    if (empty($username) || strlen($username) < 5 || strlen($username) > 20 || !preg_match("/^[a-zA-Z0-9_]+$/", $username)) {
+        echo "<script>alert('Username must be between 5-20 characters and can only contain letters, numbers, and underscores.'); window.location.href='signup.php';</script>";
         exit;
     }
+
+    // Validate password length
+    if (empty($password) || strlen($password) < 8) {
+        echo "<script>alert('Password must be at least 8 characters long.'); window.location.href='signup.php';</script>";
+        exit;
+    }
+
+    // Check if required fields are not empty
+    if (empty($username) || empty($password) || empty($confirm_password) || empty($role)) {
+        echo "<script>alert('All fields are required.'); window.location.href='signup.php';</script>";
+        exit;
+    }
+
+    // Validate passwords match
+    if ($password !== $confirm_password) {
+        echo "<script>alert('Passwords do not match.'); window.location.href='signup.php';</script>";
+        exit;
+    }
+
+    // Check if the username already exists
+    $check_query = "SELECT COUNT(*) FROM reels_db.users WHERE username = ?";
+    $stmt = mysqli_prepare($con, $check_query);
+    mysqli_stmt_bind_param($stmt, "s", $username);  // Bind the username as a string
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $user_count);
+    mysqli_stmt_fetch($stmt);
+    
+    if ($user_count > 0) {
+        echo "<script>alert('Username already exists. Please choose another.'); window.location.href='signup.php';</script>";
+        exit;
+    }
+
+    // Insert user into database
+    $insert_query = "INSERT INTO reels_db.users (username, password, role) VALUES (?, ?, ?)";
+    $stmt = mysqli_prepare($con, $insert_query);
+    mysqli_stmt_bind_param($stmt, "sss", $username, $password, $role);  // Bind username, password, and role as strings
+    mysqli_stmt_execute($stmt);
+
+    // Redirect after successful signup
+    echo "<script>alert('Sign up successful! Redirecting to login page...'); window.location.href='signin.php';</script>";
+    exit;
 }
 ?>
 
