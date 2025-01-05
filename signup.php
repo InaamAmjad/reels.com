@@ -42,11 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
     mysqli_stmt_execute($stmt);
     mysqli_stmt_bind_result($stmt, $user_count);
     mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
     
     if ($user_count > 0) {
         echo "<script>alert('Username already exists. Please choose another.'); window.location.href='signup.php';</script>";
         exit;
     }
+echo "<script>alert('working fine. Please choose another.');
 
     // Insert user into database
     $insert_query = "INSERT INTO reels_db.users (username, password, role) VALUES (?, ?, ?)";
