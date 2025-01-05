@@ -2,7 +2,7 @@
 session_start();
 
     if (!isset($_SESSION['role']) || $_SESSION['role'] === 'consumer') {
-    echo "<script>alert('You do not have permission to upload videos: $_SESSION['role'].'); window.location.href='index.php';</script>";
+    echo "<script>alert('You do not have permission to upload videos:" . $_SESSION['role'] . ".'); window.location.href='index.php';</script>";
     exit();
 }
 
