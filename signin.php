@@ -1,7 +1,5 @@
 <?php
-ini_set('session.cookie_lifetime', 86400); // Set session cookie lifetime to 1 day (86400 seconds)
-ini_set('session.cookie_secure', 1);      // Ensure cookie is sent over secure (https) connections
-ini_set('session.cookie_httponly', 1);    // Prevent JavaScript access to session cookies
+
 session_start();
 
 session_start();
@@ -48,6 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
             // Redirect to dashboard or home page
             // Redirect based on role
         if ($role === 'creator') {
+            echo '<script>';
+echo 'alert("'. print_r($_SESSION, true) .'");';
+echo '</script>';
+
             echo "<script>alert('Login successful! Redirecting to video upload page.'); window.location.href='video.php';</script>";
         } else {
             echo "<script>alert('Login successful! Redirecting to default page.'); window.location.href='index.php';</script>";
