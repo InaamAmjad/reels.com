@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
         // Compare the entered password with the stored plain password
         if ($input_password === $stored_password) {
             // Password is correct, log the user in
-            session_start();
+         
             $_SESSION['user_id'] = $id;
             $_SESSION['username'] = $username;
             $_SESSION['role'] = $role;
