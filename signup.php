@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
 
 <main>
     <h1>Sign Up</h1>
-    <form action="signup_action.php" method="post">
+    <form action="signup.php" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
 
