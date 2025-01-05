@@ -1,6 +1,6 @@
 <?php include('includes/header.php');
 
-if ($_SESSION['role'] === 'consumer') {
+    if (!isset($_SESSION['role']) || $_SESSION['role'] === 'consumer') {
     echo "<script>alert('You do not have permission to upload videos.'); window.location.href='index.php';</script>";
     exit();
 }
@@ -25,14 +25,15 @@ if ($_SESSION['role'] === 'consumer') {
                 $video_path = $upload_dir . $video_name;
 
                 // Create the uploads/videos directory if it doesn't exist
-                if (!is_dir($upload_dir)) {
-                    mkdir($upload_dir, 0777, true);
-                }
+                if (!is_dir($upload_dir) && !mkdir($upload_dir, 0777, true)) {
+                echo "<script>alert('Failed to create upload directory.');</script>";
+                exit();
+            }
 
                 // Move the uploaded file to the uploads directory
                 if (move_uploaded_file($video_tmp_path, $video_path)) {
                     // Insert video details into the database
-                    $query = "INSERT INTO videos (title, video_url, user_id) VALUES (?, ?, ?)";
+                    $query = "INSERT INTO db_reels.videos (title, video_url, user_id) VALUES (?, ?, ?)";
                     $stmt = $conn->prepare($query);
                     $stmt->bind_param("ssi", $title, $video_path, $user_id);
 
