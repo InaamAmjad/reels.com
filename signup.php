@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
     mysqli_stmt_execute($stmt);
 
     // Redirect after successful signup
-    echo "<script>alert('Sign up successful! Redirecting to login page...'); window.location.href='signin.php';</script>";
+    echo "<script>alert('Sign up successful! Redirecting to login page...'); window.location.href='index.php';</script>";
     exit;
 }
 ?>
