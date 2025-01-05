@@ -41,7 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
             $_SESSION['role'] = $role;
 
             // Redirect to dashboard or home page
-            echo "<script>alert('Login successful!'); window.location.href='index.php';</script>";
+            // Redirect based on role
+        if ($role === 'creator') {
+            echo "<script>alert('Login successful! Redirecting to video upload page.'); window.location.href='video.php';</script>";
+        } else {
+            echo "<script>alert('Login successful! Redirecting to default page.'); window.location.href='index.php';</script>";
+        }
+            
             exit;
         } else {
             // Incorrect password
