@@ -38,7 +38,7 @@ echo $_SESSION;
                 // Move the uploaded file to the uploads directory
                 if (move_uploaded_file($video_tmp_path, $video_path)) {
                     // Insert video details into the database
-                    $query = "INSERT INTO db_reels.videos (title, video_url, user_id) VALUES (?, ?, ?)";
+                    $query = "INSERT INTO videos (title, video_url, user_id) VALUES (?, ?, ?)";
                     $stmt = $conn->prepare($query);
                     $stmt->bind_param("ssi", $title, $video_path, $user_id);
 
