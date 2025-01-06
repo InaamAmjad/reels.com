@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
             // Redirect based on role
         if ($role === 'creator') {
             echo '<script>alert("'. $_SESSION['role'] .'");</script>';
-            echo "<script>alert('Login successful! Redirecting to video upload page.');header('http://'.$_SERVER['HTTP_HOST'].'/');// window.location.href='http://reelsapp.azurewebsites.net/video.php';</script>";
+            echo "<script>alert('Login successful! Redirecting to video upload page.');window.location.href='video.php';</script>";
              exit;
         } else {
             echo "<script>alert('Login successful! Redirecting to home page.'); window.location.href='index.php';</script>";
