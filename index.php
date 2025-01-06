@@ -15,8 +15,8 @@ include('includes/header.php'); ?>
                 include('includes/footer.php');
                 exit;
             }
-            echo "<script>alert('STEP 1');</script>";
-            echo "<script>alert('STEP 1.1: " . $_SESSION['user_id'] . "');</script>";
+            // echo "<script>alert('STEP 1');</script>";
+            // echo "<script>alert('STEP 1.1: " . $_SESSION['user_id'] . "');</script>";
             
             $user_id = $_SESSION['user_id'];
             $limit = 5; // Number of videos to load per page
@@ -25,24 +25,24 @@ include('includes/header.php'); ?>
 
         
             $sql = "SELECT videos.*, users.username FROM reels_db.videos JOIN users ON reels_db.videos.user_id = users.id LIMIT ? OFFSET ?";
-            echo "<script>alert('STEP 1.2: " . $sql . "');</script>";
+            // echo "<script>alert('STEP 1.2: " . $sql . "');</script>";
 
             $stmt = $conn->prepare($sql);
-            echo "<script>alert('STEP 1.2: " . $stmt . "');</script>";
+            // echo "<script>alert('STEP 1.2: " . $stmt . "');</script>";
 
             $stmt->bind_param("ii", $limit, $offset);
 
             $stmt->execute();
 
             $result = $stmt->get_result();
-            echo "<script>alert('STEP 1.2: " . $result . "');</script>";
+            // echo "<script>alert('STEP 1.2: " . $result . "');</script>";
 
-            echo "<script>alert('STEP 2');</script>";
+            // echo "<script>alert('STEP 2');</script>";
             
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $video_id = $row['id'];
-            echo "<script>alert('STEP 3');</script>";
+            // echo "<script>alert('STEP 3');</script>";
 
                     // Fetch likes count
                     $like_sql = "SELECT COUNT(*) AS like_count FROM reels_db.likes WHERE video_id = ?";
@@ -52,7 +52,7 @@ include('includes/header.php'); ?>
                     $like_result = $like_stmt->get_result();
                     $like_data = $like_result->fetch_assoc();
                     $likes = $like_data['like_count'];
-            echo "<script>alert('STEP 4');</script>";
+            // echo "<script>alert('STEP 4');</script>";
 
                     // Check if the user has already liked the video
                     $user_like_sql = "SELECT * FROM likes WHERE user_id = ? AND video_id = ?";
