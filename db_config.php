@@ -16,6 +16,4 @@ if (!mysqli_real_connect($conn, $servername, $username, $password, $dbname, 3306
     die("Connection failed: " . mysqli_connect_error());
 }
 
-// If connection is successful, continue your logic here
-echo "Connection successful!";
 ?>
