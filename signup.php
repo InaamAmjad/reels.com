@@ -15,14 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<script>alert('Passwords do not match. Please try again.'); window.location.href='signup.php';</script>";
         exit;
     }
-
-    // Hash the password before storing it
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
     // Prepare the SQL query to insert the new user
     $query = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("sss", $username, $hashed_password, $role);
+    $stmt->bind_param("sss", $username, $password, $role);
 
     // Execute the query and check for errors
     if ($stmt->execute()) {
