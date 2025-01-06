@@ -22,10 +22,18 @@ include('includes/header.php'); ?>
 
         
             $sql = "SELECT videos.*, users.username FROM reels_db.videos JOIN users ON reels_db.videos.user_id = users.id LIMIT ? OFFSET ?";
+            echo "<script>alert('STEP 1.2: " . $sql . "');</script>";
+
             $stmt = $conn->prepare($sql);
+            echo "<script>alert('STEP 1.2: " . $stmt . "');</script>";
+
             $stmt->bind_param("ii", $limit, $offset);
+
             $stmt->execute();
+
             $result = $stmt->get_result();
+            echo "<script>alert('STEP 1.2: " . $result . "');</script>";
+
             echo "<script>alert('STEP 2');</script>";
             
             if ($result->num_rows > 0) {
