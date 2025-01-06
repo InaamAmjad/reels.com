@@ -1,81 +1,90 @@
 <?php
 session_start();
-// Database connection settings
-$servername = "reels-server.mysql.database.azure.com";
-$username = "reelsmydb";
-$password = "Nomi4321";
-$dbname = "reels_db";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
+    // Database credentials
+    // Set up SSL parameters
+       include('db_config.php');
 
-$con = mysqli_init();  // Initialize the MySQL connection
+    // Sanitize and validate input
+    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+    $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
 
-// Set up SSL parameters
-mysqli_ssl_set($con, NULL, NULL, "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
-
-// Establish a connection to the MySQL database
-if (!mysqli_real_connect($con, $servername, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL)) {
-    // Check connection and handle errors
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-// Check if form is submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
-    $input_username = $_POST['username'];
-    $input_password = $_POST['password'];  // The plain password entered by the user
-
-    // Prepare the SQL query to retrieve the user's password from the database
-    $query = "SELECT id, username, password, role FROM reels_db.users WHERE username = ?";
-    $stmt = mysqli_prepare($con, $query);
-    mysqli_stmt_bind_param($stmt, "s", $input_username);  // Bind username to query
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $id, $username, $stored_password, $role);
-    mysqli_stmt_fetch($stmt);  // Fetch the result
-
-    // Check if the username exists in the database
-    if ($username) {
-        // Compare the entered password with the stored plain password
-        if ($input_password === $stored_password) {
-            // Password is correct, log the user in
-         
-            $_SESSION['user_id'] = $id;
-            $_SESSION['username'] = $username;
-            $_SESSION['role'] = $role;
-
-            // Redirect to dashboard or home page
-            // Redirect based on role
-        if ($role === 'creator') {
-            echo '<script>alert("'. $_SESSION['role'] .'");</script>';
-            echo "<script>alert('Login successful! Redirecting to video upload page.'); window.location.href='video.php';</script>";
-             exit;
-        } else {
-            echo "<script>alert('Login successful! Redirecting to home page.'); window.location.href='index.php';</script>";
-             exit;
-        }
-            
-           
-        } else {
-            // Incorrect password
-            echo "<script>alert('Incorrect password. Please try again.'); window.location.href='signin.php';</script>";
-            exit;
-        }
-    } else {
-        // Username doesn't exist
-        echo "<script>alert('Username not found.'); window.location.href='signin.php';</script>";
+    // Additional validation for username
+    if (empty($username) || strlen($username) < 5 || strlen($username) > 20 || !preg_match("/^[a-zA-Z0-9_]+$/", $username)) {
+        echo "<script>alert('Username must be between 5-20 characters and can only contain letters, numbers, and underscores.'); window.location.href='signup.php';</script>";
         exit;
     }
+
+    // Validate password length
+    if (empty($password) || strlen($password) < 8) {
+        echo "<script>alert('Password must be at least 8 characters long.'); window.location.href='signup.php';</script>";
+        exit;
+    }
+
+    // Check if required fields are not empty
+    if (empty($username) || empty($password) || empty($confirm_password) || empty($role)) {
+        echo "<script>alert('All fields are required.'); window.location.href='signup.php';</script>";
+        exit;
+    }
+
+    // Validate passwords match
+    if ($password !== $confirm_password) {
+        echo "<script>alert('Passwords do not match.'); window.location.href='signup.php';</script>";
+        exit;
+    }
+
+    // Check if the username already exists
+    $check_query = "SELECT COUNT(*) FROM reels_db.users WHERE username = ?";
+    $stmt = mysqli_prepare($con, $check_query);
+    mysqli_stmt_bind_param($stmt, "s", $username);  // Bind the username as a string
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $user_count);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+    
+    if ($user_count > 0) {
+        echo "<script>alert('Username already exists. Please choose another.'); window.location.href='signup.php';</script>";
+        exit;
+    }
+
+    // Insert user into database
+    $insert_query = "INSERT INTO reels_db.users (username, password, role) VALUES (?, ?, ?)";
+    $stmt = mysqli_prepare($con, $insert_query);
+    mysqli_stmt_bind_param($stmt, "sss", $username, $password, $role);  // Bind username, password, and role as strings
+    mysqli_stmt_execute($stmt);
+
+    // Redirect after successful signup
+    echo "<script>alert('Sign up successful! Redirecting to login page...'); window.location.href='index.php';</script>";
+    exit;
 }
 ?>
 
 <?php include('includes/header.php'); ?>
+
+
 <main>
-    <h1>Sign In</h1>
-    <form action="signin.php" method="post">
+    <h1>Sign Up</h1>
+    <form action="signup.php" method="post" autocomplete="off">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" name="username" required autocomplete="new-username">
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" required autocomplete="new-password">
 
-        <button type="submit" name="signin">Sign In</button>
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password">
+
+        <label for="role">Role:</label>
+        <select id="role" name="role">
+            <option value="creator">Creator</option>
+            <option value="consumer">Consumer</option>
+        </select>
+
+        <button type="submit" name="signup">Sign Up</button>
     </form>
 </main>
+
 <?php include('includes/footer.php'); ?>
+        
