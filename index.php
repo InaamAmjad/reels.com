@@ -72,7 +72,7 @@ include('includes/header.php'); ?>
                     while ($comment = $comment_result->fetch_assoc()) {
                         $comments[] = $comment;
                     }
-            echo "<script>alert('STEP 5');</script>";
+            // echo "<script>alert('STEP 5');</script>";
 
                     echo '<div class="video-card">';
                     echo '<div class="video-details">';
