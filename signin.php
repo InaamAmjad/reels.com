@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     // Check if the username exists in the database
     if ($username) {
         // Compare the entered password with the stored hashed password
-        if (password_verify($input_password, $stored_password)) {
+        if ($input_password===$stored_password) {
             // Password is correct, log the user in
             $_SESSION['user_id'] = $id;
             $_SESSION['username'] = $username;
