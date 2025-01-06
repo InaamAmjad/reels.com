@@ -13,11 +13,12 @@ include('includes/header.php'); ?>
                 exit;
             }
             echo "<script>alert('STEP 1');</script>";
-
+            echo "<script>alert('STEP 1.1: " . $_SESSION['user_id'] . "');</script>";
+            
             $user_id = $_SESSION['user_id'];
             $limit = 5; // Number of videos to load per page
             $offset = 0; // Initial offset
-            echo "<script>alert('STEP 1.1: " . $_SESSION . "');</script>";
+            echo "<script>alert('STEP 1.2: " . $_SESSION . "');</script>";
 
         
             $sql = "SELECT videos.*, users.username FROM videos JOIN users ON videos.user_id = users.id LIMIT ? OFFSET ?";
