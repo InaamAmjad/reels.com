@@ -21,7 +21,7 @@ include('includes/header.php'); ?>
             echo "<script>alert('STEP 1.2: " . $_SESSION . "');</script>";
 
         
-            $sql = "SELECT videos.*, users.username FROM videos JOIN users ON videos.user_id = users.id LIMIT ? OFFSET ?";
+            $sql = "SELECT videos.*, users.username FROM reels_db.videos JOIN users ON reels_db.videos.user_id = users.id LIMIT ? OFFSET ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("ii", $limit, $offset);
             $stmt->execute();
@@ -34,7 +34,7 @@ include('includes/header.php'); ?>
             echo "<script>alert('STEP 3');</script>";
 
                     // Fetch likes count
-                    $like_sql = "SELECT COUNT(*) AS like_count FROM likes WHERE video_id = ?";
+                    $like_sql = "SELECT COUNT(*) AS like_count FROM reels_db.likes WHERE video_id = ?";
                     $like_stmt = $conn->prepare($like_sql);
                     $like_stmt->bind_param("i", $video_id);
                     $like_stmt->execute();
