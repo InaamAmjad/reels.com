@@ -8,7 +8,7 @@ $dbname = "reels_db";
 
 $con = mysqli_init();  // Initialize the MySQL connection
 
-// Set up SSL parameters
+// // Set up SSL parameters
 mysqli_ssl_set($con, NULL, NULL, "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
 
 // Establish a connection to the MySQL database
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
             // Redirect based on role
         if ($role === 'creator') {
             echo '<script>alert("'. $_SESSION['role'] .'");</script>';
-            echo "<script>alert('Login successful! Redirecting to video upload page.'); window.location.href='video.php';</script>";
+            echo "<script>alert('Login successful! Redirecting to video upload page.'); window.location.href='index.php';</script>";
              exit;
         } else {
             echo "<script>alert('Login successful! Redirecting to home page.'); window.location.href='index.php';</script>";
