@@ -6,13 +6,13 @@ $username = "reelsmydb";
 $password = "Nomi4321";
 $dbname = "reels_db";
 
-$con = mysqli_init();  // Initialize the MySQL connection
+$conn = mysqli_init();  // Initialize the MySQL connection
 
 // // Set up SSL parameters
-mysqli_ssl_set($con, NULL, NULL, "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
+mysqli_ssl_set($conn, NULL, NULL, "/home/site/ssl_certs/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
 
 // Establish a connection to the MySQL database
-if (!mysqli_real_connect($con, $servername, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL)) {
+if (!mysqli_real_connect($conn, $servername, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL)) {
     // Check connection and handle errors
     die("Connection failed: " . mysqli_connect_error());
 }
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
 
     // Prepare the SQL query to retrieve the user's password from the database
     $query = "SELECT id, username, password, role FROM reels_db.users WHERE username = ?";
-    $stmt = mysqli_prepare($con, $query);
+    $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "s", $input_username);  // Bind username to query
     mysqli_stmt_execute($stmt);
     mysqli_stmt_bind_result($stmt, $id, $username, $stored_password, $role);
