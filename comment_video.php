@@ -9,9 +9,9 @@ include('db_config.php');
 // Insert comment into the database
 $insert_comment_sql = "INSERT INTO comments (video_id, user_id, comment_text) VALUES ($video_id, $user_id, '$comment_text')";
 if ($conn->query($insert_comment_sql) === TRUE) {
-    echo json_encode(['success' => true]);
+    // echo json_encode(['success' => true]);
 } else {
-    echo json_encode(['success' => false]);
+    // echo json_encode(['success' => false]);
 }
 
 $conn->close();
