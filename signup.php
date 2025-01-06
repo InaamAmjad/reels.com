@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
 
     // Check if the username already exists
     $check_query = "SELECT COUNT(*) FROM reels_db.users WHERE username = ?";
-    $stmt = mysqli_prepare($con, $check_query);
+    $stmt = mysqli_prepare($conn, $check_query);
     mysqli_stmt_bind_param($stmt, "s", $username);  // Bind the username as a string
     mysqli_stmt_execute($stmt);
     mysqli_stmt_bind_result($stmt, $user_count);
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
 
     // Insert user into database
     $insert_query = "INSERT INTO reels_db.users (username, password, role) VALUES (?, ?, ?)";
-    $stmt = mysqli_prepare($con, $insert_query);
+    $stmt = mysqli_prepare($conn, $insert_query);
     mysqli_stmt_bind_param($stmt, "sss", $username, $password, $role);  // Bind username, password, and role as strings
     mysqli_stmt_execute($stmt);
 
