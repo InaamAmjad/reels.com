@@ -1,5 +1,6 @@
 <?php include('includes/header.php');
 session_start();
+echo $_SESSION;
     if (!isset($_SESSION['role']) || $_SESSION['role'] === 'consumer') {
          echo "<script>alert('Error: " . $_SESSION['role'] . "');</script>";
         echo "<script>alert('You do not have permission to upload videos:" . $_SESSION['role'] . ".'); window.location.href='index.php';</script>";
