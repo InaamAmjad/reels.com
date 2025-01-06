@@ -12,6 +12,8 @@ include('includes/header.php'); ?>
                 include('includes/footer.php');
                 exit;
             }
+            echo "<script>alert('STEP 1');</script>";
+
             $user_id = $_SESSION['user_id'];
             $limit = 5; // Number of videos to load per page
             $offset = 0; // Initial offset
@@ -21,10 +23,12 @@ include('includes/header.php'); ?>
             $stmt->bind_param("ii", $limit, $offset);
             $stmt->execute();
             $result = $stmt->get_result();
+            echo "<script>alert('STEP 2');</script>";
             
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $video_id = $row['id'];
+            echo "<script>alert('STEP 3');</script>";
 
                     // Fetch likes count
                     $like_sql = "SELECT COUNT(*) AS like_count FROM likes WHERE video_id = ?";
@@ -34,6 +38,7 @@ include('includes/header.php'); ?>
                     $like_result = $like_stmt->get_result();
                     $like_data = $like_result->fetch_assoc();
                     $likes = $like_data['like_count'];
+            echo "<script>alert('STEP 4');</script>";
 
                     // Check if the user has already liked the video
                     $user_like_sql = "SELECT * FROM likes WHERE user_id = ? AND video_id = ?";
@@ -53,6 +58,7 @@ include('includes/header.php'); ?>
                     while ($comment = $comment_result->fetch_assoc()) {
                         $comments[] = $comment;
                     }
+            echo "<script>alert('STEP 5');</script>";
 
                     echo '<div class="video-card">';
                     echo '<div class="video-details">';
