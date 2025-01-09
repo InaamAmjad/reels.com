@@ -14,7 +14,8 @@ if (session_status() == PHP_SESSION_NONE) {
 <body>
     <header>
         <div class="logo">
-            <h1><a href="index.php">Reels.com</a></h1>
+           
+             <h1><a href="index.php" style="color: white; text-decoration: none;">Reels.com</a></h1>
         </div>
         <nav>
             <ul>
